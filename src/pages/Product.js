@@ -1,48 +1,48 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/frontend_assets/assets';
 import RelatedProducts from '../components/RelatedProducts';
 
 const Product = () => {
-  const {productId} = useParams();
-  const {products, currency, cartItem, addToCart} = useContext(ShopContext);
-  const [productData, setProductData] = useState(false);
+  const { productId } = useParams();
+  const { products, currency, addToCart } = useContext(ShopContext);
+  const [productData, setProductData] = useState(null);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
 
-  const fetchProductData = async () =>{
-    products.map((item)=>{
-      if(item._id === productId){
-        setProductData(item);
-        setImage(item.image[0]);
-        return null;
-      }
-    })
+  const fetchProductData = useCallback(() => {
+    const product = products.find(item => item._id === productId);
+    if (product) {
+      setProductData(product);
+      setImage(product.image[0]);
+    }
+  }, [productId, products]);
 
-  }
-  useEffect(()=>{
+  useEffect(() => {
     fetchProductData();
-  },[productId, products])
+  }, [fetchProductData]);
+
   return productData ? (
     <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
-      {/**product data */}
       <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
-        {/**product image */}
         <div className='flex-1 flex flex-col-reverse gap-3 sm:flex-row'>
           <div className='flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal sm:w-[18.7%] w-full'>
-            {
-              productData.image.map((item, index)=>(
-                <img onClick={()=>setImage(item)} src={item} key={index} className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer' alt="" />
-              ))
-            }
+            {productData.image.map((item, index) => (
+              <img
+                onClick={() => setImage(item)}
+                src={item}
+                key={index}
+                className='w-[24%] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer'
+                alt=""
+              />
+            ))}
           </div>
           <div className='w-full sm:w-[80%]'>
             <img className='w-full h-auto' src={image} alt="" />
           </div>
         </div>
 
-        {/**product info */}
         <div className='flex-1'>
           <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
           <div className='flex items-center gap-1 mt-2'>
@@ -58,40 +58,48 @@ const Product = () => {
           <div className='flex flex-col gap-4 my-8'>
             <p>Select Size</p>
             <div className='flex gap-2'>
-              {
-                productData.sizes.map((item, index)=>(
-                  <button onClick={()=>setSize(item)} className={`border py-2 px-4 bg-gray-100 ${item === size ? 'bg-orange-500 text-white' : ''} `} key={index}>{item}</button>
-                ))
-              }
+              {productData.sizes.map((item, index) => (
+                <button
+                  onClick={() => setSize(item)}
+                  className={`border py-2 px-4 bg-gray-100 ${item === size ? 'bg-orange-500 text-white' : ''}`}
+                  key={index}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
-          <button onClick={()=>{addToCart(productData._id, size)}} className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'>ADD TO CART</button>
+          <button
+            onClick={() => addToCart(productData._id, size)}
+            className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'
+          >
+            ADD TO CART
+          </button>
           <hr className='mt-8 sm:w-4/5' />
           <div className='text-sm text-gray-500 flex flex-col gap-1'>
             <p>100% Original Product.</p>
-            <p>Cash on delivery is avaiable on this product.</p>
-            <p>Easy return and exchange policy whithin 7 days.</p>
+            <p>Cash on delivery is available on this product.</p>
+            <p>Easy return and exchange policy within 7 days.</p>
           </div>
         </div>
       </div>
 
-       {/**Product Discreption and review */}
-       <div className='mt-20'>
+      <div className='mt-20'>
         <div className='flex'>
           <b className='border px-5 py-3 text-sm'>Description</b>
           <p className='border px-5 py-3 text-sm'>Reviews (112)</p>
         </div>
         <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. At provident optio voluptas temporibus cupiditate officiis rerum ipsum commodi natus. Assumenda accusamus ducimus repellat amet eligendi ab fugit mollitia praesentium dolorem?</p>
-          <p>Dolorem corporis. Perspiciatis quaerat corrupti fugiat nemo quae laudantium nisi, ipsum dolor sit amet consectetur adipisicing elit. Consequuntur blanditiis, quisquam laudantium nam ipsa provident fugiat totam accusantium modi, officia nobis ?</p>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit...</p>
+          <p>Dolorem corporis. Perspiciatis quaerat corrupti fugiat...</p>
         </div>
 
-        {/**Product Discreption and review */}
-        <RelatedProducts category={productData.category} subCategory={productData.subCategory}/>
-       </div>
-      
+        <RelatedProducts category={productData.category} subCategory={productData.subCategory} />
+      </div>
     </div>
-  ) : <div className='opacity-0'></div>
-}
+  ) : (
+    <div className='opacity-0'></div>
+  );
+};
 
-export default Product
+export default Product;
