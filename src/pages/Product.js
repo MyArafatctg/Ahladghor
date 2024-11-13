@@ -12,12 +12,13 @@ const Product = () => {
   const [size, setSize] = useState('');
 
   const fetchProductData = useCallback(() => {
-    const product = products.find(item => item._id === productId);
+    const product = products.find(item => item._id === Number(productId));
+    console.log(products)
     if (product) {
       setProductData(product);
       setImage(product.image[0]);
     }
-  }, [productId, products]);
+  }, [products, productId]);
 
   useEffect(() => {
     fetchProductData();

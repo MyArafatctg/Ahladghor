@@ -27,7 +27,7 @@ const Collections = () => {
   };
 
   const applyFilter = useCallback(() => {
-    let copyProducts = [...products];
+    let copyProducts = products.slice();
 
     if (category.length > 0) {
       copyProducts = copyProducts.filter(item => category.includes(item.category));
@@ -40,31 +40,41 @@ const Collections = () => {
     if (subCategory.length > 0) {
       copyProducts = copyProducts.filter(item => subCategory.includes(item.subCategory));
     }
-    setFilterProduct(copyProducts);
-  }, [products, category, search, showSearch, subCategory]);
+
+    // Only update if the filtered result is different
+    setFilterProduct(prev => {
+      const isEqual = JSON.stringify(prev) === JSON.stringify(copyProducts);
+      return isEqual ? prev : copyProducts;
+    });
+  }, [products, category, showSearch, search, subCategory]);
 
   const sortProducts = useCallback(() => {
-    let sortedProducts = [...filterProduct];
+    let sortedProducts = filterProduct.slice();
     switch (sortType) {
       case 'low-high':
-        setFilterProduct(sortedProducts.sort((a, b) => a.price - b.price));
+        sortedProducts.sort((a, b) => a.price - b.price);
         break;
       case 'high-low':
-        setFilterProduct(sortedProducts.sort((a, b) => b.price - a.price));
+        sortedProducts.sort((a, b) => b.price - a.price);
         break;
       default:
-        applyFilter();
-        break;
+        return; // No need to re-run `applyFilter`, prevents re-triggering
     }
-  }, [filterProduct, sortType, applyFilter]);
+
+    // Only update if sorted result is different
+    setFilterProduct(prev => {
+      const isEqual = JSON.stringify(prev) === JSON.stringify(sortedProducts);
+      return isEqual ? prev : sortedProducts;
+    });
+  }, [filterProduct, sortType]);
 
   useEffect(() => {
     applyFilter();
-  }, [applyFilter, category, subCategory, search, showSearch]);
+  }, [applyFilter]);
 
   useEffect(() => {
     sortProducts();
-  }, [sortProducts, sortType]);
+  }, [sortProducts]);
 
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
