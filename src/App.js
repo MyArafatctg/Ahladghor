@@ -34,7 +34,7 @@ const App = () => {
         <Route path='/orders' element={<Orders/>}/>
       </Routes>
       <Footer/> 
-      <FacebookMsg/>
+      {/* <FacebookMsg/> */}
     </div>
   )
 }

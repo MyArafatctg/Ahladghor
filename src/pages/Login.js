@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext';
 import { toast } from 'react-toastify';
+import { assets } from '../assets/frontend_assets/assets';
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Sign Up');
@@ -60,6 +61,7 @@ const Login = () => {
     }
   },[nevigate,token])
   return (
+    <div className='flex flex-col sm:flex-row'>
     <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800'>
       <div className='inline-flex items-center gap-2 mb-2 mt-10'>
         <p className='prata-regular text-3xl'>{currentState}</p>
@@ -78,6 +80,8 @@ const Login = () => {
       </div>
       <button className='bg-black text-white font-light px-8 py-2 mt-4'>{currentState === 'Login' ? 'Sign In' : 'Sign Up'}</button>
     </form>
+    <div className='w-full sm:w-1/2'><img src={assets.login_img} alt="" /></div>
+    </div>
   )
 }
 

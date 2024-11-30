@@ -111,7 +111,7 @@ const PlaceOrder = () => {
             orderDetails: JSON.stringify(orderItems)
           }
           // console.log(orderItems);
-          // console.log('orderItems ', masterData);
+          console.log('orderItems ', masterData);
 
           const response = await fetch('https://apex.oracle.com/pls/apex/ahladghor/order/placeOrder', {
             method: 'POST',
