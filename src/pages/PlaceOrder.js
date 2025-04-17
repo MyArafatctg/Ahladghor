@@ -34,9 +34,24 @@ const PlaceOrder = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
 
+      let userInfo = {
+        "FIRSTNAME" : "",
+        "LASTNAME" : "",
+        "EMAIL" : "",
+        "STREET" : "",
+        "CITY" : "",
+        "STATE" : "",
+        "ZIPCODE" : "",
+        "COUNTRY" : "",
+        "PHONE" : ""
+      };
       const data = await response.json();
-      const userInfo = data.data[0];
-      if (userInfo) {
+      console.log(data)
+      if(data.message === 'Success'){
+        userInfo = data.data[0];
+      }
+      
+      if (data.message === 'Success') {
         setFormData({
           firstName: userInfo.FIRSTNAME.trim() || '',
           lastName: userInfo.LASTNAME.trim() || '',
